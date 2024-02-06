@@ -1,0 +1,102 @@
+---
+import { generateUUID } from "../script.ts";
+const { title } = Astro.props;
+---
+
+<varsel-form>
+  <h2>{title}</h2>
+  <form>
+    {
+      title === "Utkast" && (
+        <>
+          <label>UtkastId</label>
+          <input
+            value=""
+            type="text"
+            placeholder="Skriv inn utkastid"
+            id="id-input"
+          />
+          <div>
+            <button type="button" id="uuid-button">
+              UUID
+            </button>
+            <button type="button" id="ulid-button">
+              ULID
+            </button>
+          </div>
+        </>
+      )
+    }
+    <label>Tittel</label>
+    <input placeholder="Skriv inn tekst" type="text" value="" />
+    <label>Lenke</label>
+    <input
+      placeholder="https://www.nav.no/minside"
+      pattern="url"
+      type="url"
+      value=""
+    />
+    {
+      title !== "Utkast" && (
+        <>
+          <label>Ekstern varsling</label>
+          <select id="" name="ekstern varsling">
+            <option value="false">False</option>
+            <option value="true">True</option>
+          </select>
+        </>
+      )
+    }
+    <button type="button">Opprett</button>
+    {
+      title === "Utkast" && (
+        <>
+          <button type="button">Oppdater</button>
+          <button type="button">Slett</button>
+        </>
+      )
+    }
+  </form>
+</varsel-form>
+
+<script>
+  const setError = (errorMessage: string) => {
+    window.sessionStorage.setItem("isError", errorMessage);
+    window.dispatchEvent(new Event("isError"));
+  };
+
+  const fetchString = async (url: string, errorMelding:string) => {
+    return fetch(url, {})
+      .then((response) => {
+        if (!response.ok){
+          setError(`${response.status} ${errorMelding}`)
+        }
+        return response.text()})
+      .then((data) => data);
+  };
+
+  class VarselForm extends HTMLElement {
+    constructor() {
+      super();
+
+      const uuidButton = this.querySelector("[id='uuid-button']");
+      const ulidButton = this.querySelector("[id='ulid-button']");
+      const utkastIdInput = this.querySelector("[id='id-input']");
+
+      uuidButton?.addEventListener("click", async () => {
+        const id = await fetchString(
+          "http://localhost:4321/mock/uuid",
+          "Kall for å generere UUID feilet."
+        );
+        utkastIdInput.value = id;
+      });
+
+      ulidButton?.addEventListener("click", async () => {
+        const id = fetchString("http://localhost:4321/mock/ulid");
+        utkastIdInput.value = await id;
+      });
+    }
+  }
+
+  customElements.define("varsel-form", VarselForm);
+</script>

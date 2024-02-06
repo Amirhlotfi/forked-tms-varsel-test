@@ -1,0 +1,34 @@
+---
+const { default: alertIcon } = await import(`./alsertIcon.svg?raw`);
+---
+
+<error-panel>
+  <div
+    class="Feilmelding-module__feilmelding___JBdeg navds-alert navds-alert--error navds-alert--medium"
+  >
+    <Fragment set:html={alertIcon} />
+    <div class="navds-alert__wrapper navds-body-long navds-body-long--medium">
+      Vi har for øyeblikket tekniske problemer. Det kan føre til at noe av
+      funksjonaliteten ikke funker.
+    </div>
+  </div>
+</error-panel>
+
+<script>
+  class ErrorPanel extends HTMLElement {
+    constructor() {
+      super();
+      window.addEventListener("isError", () => {
+        this.style.display = "block";
+      });
+    }
+  }
+
+  customElements.define("error-panel", ErrorPanel);
+</script>
+
+<style>
+  error-panel {
+    display: none;
+  }
+</style>
