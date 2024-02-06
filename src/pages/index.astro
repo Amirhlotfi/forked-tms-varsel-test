@@ -2,6 +2,10 @@
 import { fetchDecoratorReact } from "@navikt/nav-dekoratoren-moduler/ssr";
 import VarselForm from "../components/VarselForm.astro";
 import ErrorPanel from "../components/ErrorPanel.astro";
+import "../styles/index.css";
+const { default: Varselbjelle } = await import(
+  `../assets/Varselbjelle.svg?raw`
+);
 
 export interface Props {
   title: string;
@@ -42,18 +46,32 @@ const Decorator = await fetchDecoratorReact({
     <meta name="viewport" content="width=device-width" />
     <meta name="robots" content="noindex" />
     <title>{"Test av varsler"}</title>
-    <link rel="preload" href="https://cdn.nav.no/aksel/@navikt/ds-css/5.7.3/index.min.css" as="style" />
-    <link rel="stylesheet" href="https://cdn.nav.no/aksel/@navikt/ds-css/5.7.3/index.min.css" />
+    <link
+      rel="preload"
+      href="https://cdn.nav.no/aksel/@navikt/ds-css/5.7.3/index.min.css"
+      as="style"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.nav.no/aksel/@navikt/ds-css/5.7.3/index.min.css"
+    />
     <Decorator.Styles />
   </head>
   <body>
     <Decorator.Header />
-    <h1>Test av varsler</h1>
-    <ErrorPanel />
-    <VarselForm title="Utkast" />
-    <VarselForm title="Oppgave" />
-    <VarselForm title="Utkast" />
+    <div class="main-container">
+      <div>
+        <h1>Test av varsler</h1>
+        <Fragment set:html={Varselbjelle} />
+        
+      </div>
+      <ErrorPanel />
+      <VarselForm title="Utkast" />
+      <VarselForm title="Oppgave" />
+      <VarselForm title="Utkast" />
+    </div>
     <Decorator.Footer />
     <Decorator.Scripts />
-  </body>../script.ts
+    ../script.ts
+  </body>
 </html>
